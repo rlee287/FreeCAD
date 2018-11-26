@@ -1,3 +1,13 @@
+OPTION(BUILD_WITH_ASAN "Build with sanitizers" OFF)
+
+if(BUILD_WITH_ASAN)
+	MESSAGE("Building with ASan and UBSan")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address,undefined")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fsanitize=address,undefined")
+	#set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "$CMAKE_SHARED_LINKER_FLAGS_RELEASE -fsanitize=address,undefined")
+endif(BUILD_WITH_ASAN)
 project(FreeCAD_trunk)
 
 set(PACKAGE_NAME "FreeCAD")
@@ -1239,3 +1249,4 @@ if (${CMAKE_BUILD_TOOL} MATCHES "make")
             "Now run 'make' to build ${PACKAGE_NAME}\n"
             "=======================================\n")
 endif()
+
