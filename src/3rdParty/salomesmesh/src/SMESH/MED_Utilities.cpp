@@ -41,7 +41,7 @@ MED::PrefixPrinter::PrefixPrinter(bool theIsActive):
   MSG(MYDEBUG,"MED::PrefixPrinter::PrefixPrinter(...)- "<<myCounter);
 }
 
-MED::PrefixPrinter::~PrefixPrinter()
+MED::PrefixPrinter::~PrefixPrinter() noexcept(false)
 {
   if(myIsActive){
     myCounter--;
