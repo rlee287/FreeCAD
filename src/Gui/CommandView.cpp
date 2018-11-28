@@ -116,7 +116,9 @@ void StdOrthographicCamera::activated(int iMsg)
 
 bool StdOrthographicCamera::isActive(void)
 {
-    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    MDIView* intermed_ptr = getMainWindow()->activeWindow();
+    if (!intermed_ptr) return false;
+    View3DInventor* view = qobject_cast<View3DInventor*>(intermed_ptr);
     if (view) {
         // update the action group if needed
         bool check = _pcAction->isChecked();
@@ -166,7 +168,9 @@ void StdPerspectiveCamera::activated(int iMsg)
 
 bool StdPerspectiveCamera::isActive(void)
 {
-    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    MDIView* intermed_ptr = getMainWindow()->activeWindow();
+    if (!intermed_ptr) return false;
+    View3DInventor* view = qobject_cast<View3DInventor*>(intermed_ptr);
     if (view) {
         // update the action group if needed
         bool check = _pcAction->isChecked();
@@ -440,6 +444,8 @@ void StdCmdFreezeViews::onRestoreViews()
 
 bool StdCmdFreezeViews::isActive(void)
 {
+    MDIView* intermed_ptr=getMainWindow()->activeWindow();
+    if (!intermed_ptr) return false;
     View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
     if (view) {
         saveView->setEnabled(savedViews > 0);
@@ -1447,6 +1453,7 @@ void StdViewDock::activated(int iMsg)
 bool StdViewDock::isActive(void)
 {
     MDIView* view = getMainWindow()->activeWindow();
+    if (!view) return false;
     return (qobject_cast<View3DInventor*>(view) ? true : false);
 }
 
@@ -1475,6 +1482,7 @@ void StdViewUndock::activated(int iMsg)
 bool StdViewUndock::isActive(void)
 {
     MDIView* view = getMainWindow()->activeWindow();
+    if (!view) return false;
     return (qobject_cast<View3DInventor*>(view) ? true : false);
 }
 
@@ -1536,6 +1544,7 @@ void StdViewFullscreen::activated(int iMsg)
 bool StdViewFullscreen::isActive(void)
 {
     MDIView* view = getMainWindow()->activeWindow();
+    if (!view) return false;
     return (qobject_cast<View3DInventor*>(view) ? true : false);
 }
 
@@ -1651,6 +1660,7 @@ void StdViewDockUndockFullscreen::activated(int iMsg)
 bool StdViewDockUndockFullscreen::isActive(void)
 {
     MDIView* view = getMainWindow()->activeWindow();
+    if (!view) return false;
     if (qobject_cast<View3DInventor*>(view)) {
         // update the action group if needed
         ActionGroup* pActGrp = qobject_cast<ActionGroup*>(_pcAction);
@@ -1719,8 +1729,10 @@ StdViewScreenShot::StdViewScreenShot()
 
 void StdViewScreenShot::activated(int iMsg)
 {
-    Q_UNUSED(iMsg); 
-    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    Q_UNUSED(iMsg);
+    MDIView* mdiview = getMainWindow()->activeWindow();
+    if (!mdiview) return;
+    View3DInventor* view = qobject_cast<View3DInventor*>(mdiview);
     if (view) {
         QStringList formats;
         SbViewportRegion vp(view->getViewer()->getSoRenderManager()->getViewportRegion());
@@ -2043,7 +2055,9 @@ void StdCmdAxisCross::activated(int iMsg)
 
 bool StdCmdAxisCross::isActive(void)
 {
-    Gui::View3DInventor* view = qobject_cast<View3DInventor*>(Gui::getMainWindow()->activeWindow());
+    MDIView* intermed_ptr = Gui::getMainWindow()->activeWindow();
+    if (!intermed_ptr) return false;
+    Gui::View3DInventor* view = qobject_cast<View3DInventor*>(intermed_ptr);
     if (view && view->getViewer()->hasAxisCross()) {
         if (!_pcAction->isChecked())
             _pcAction->setChecked(true);
@@ -2368,6 +2382,8 @@ void StdViewZoomIn::activated(int iMsg)
 
 bool StdViewZoomIn::isActive(void)
 {
+    MDIView* view = getMainWindow()->activeWindow();
+    if (!view) return false;
     return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
 }
 
@@ -2403,7 +2419,9 @@ void StdViewZoomOut::activated(int iMsg)
 
 bool StdViewZoomOut::isActive(void)
 {
-    return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+    MDIView* intermed_ptr = getMainWindow()->activeWindow();
+    if (!intermed_ptr) return false;
+    return (qobject_cast<View3DInventor*>(intermed_ptr));
 }
 
 //===========================================================================
