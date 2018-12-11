@@ -5247,20 +5247,23 @@ bool ViewProviderSketch::setEdit(int ModNum)
     // object unsets and sets its edit mode without closing
     // the task panel
     Gui::TaskView::TaskDialog *dlg = Gui::Control().activeDialog();
-    TaskDlgEditSketch *sketchDlg = qobject_cast<TaskDlgEditSketch *>(dlg);
-    if (sketchDlg && sketchDlg->getSketchView() != this)
-        sketchDlg = 0; // another sketch left open its task panel
-    if (dlg && !sketchDlg) {
-        QMessageBox msgBox;
-        msgBox.setText(tr("A dialog is already open in the task panel"));
-        msgBox.setInformativeText(tr("Do you want to close this dialog?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
-        if (ret == QMessageBox::Yes)
-            Gui::Control().reject();
-        else
-            return false;
+    TaskDlgEditSketch *sketchDlg = nullptr; // Variable used further down the line
+    if (dlg) {
+        sketchDlg = qobject_cast<TaskDlgEditSketch *>(dlg);
+        if (sketchDlg && sketchDlg->getSketchView() != this)
+            sketchDlg = 0; // another sketch left open its task panel
+        if (!sketchDlg) {
+            QMessageBox msgBox;
+            msgBox.setText(tr("A dialog is already open in the task panel"));
+            msgBox.setInformativeText(tr("Do you want to close this dialog?"));
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+            if (ret == QMessageBox::Yes)
+                Gui::Control().reject();
+            else
+                return false;
+        }
     }
 
     Sketcher::SketchObject* sketch = getSketchObject();

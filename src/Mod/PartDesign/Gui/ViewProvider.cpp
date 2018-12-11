@@ -96,22 +96,25 @@ bool ViewProvider::setEdit(int ModNum)
         // object unsets and sets its edit mode without closing
         // the task panel
         Gui::TaskView::TaskDialog *dlg = Gui::Control().activeDialog();
-        TaskDlgFeatureParameters *featureDlg = qobject_cast<TaskDlgFeatureParameters *>(dlg);
-        // NOTE: if the dialog is not partDesigan dialog the featureDlg will be NULL
-        if (featureDlg && featureDlg->viewProvider() != this) {
-            featureDlg = 0; // another feature left open its task panel
-        }
-        if (dlg && !featureDlg) {
-            QMessageBox msgBox;
-            msgBox.setText(QObject::tr("A dialog is already open in the task panel"));
-            msgBox.setInformativeText(QObject::tr("Do you want to close this dialog?"));
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::Yes);
-            int ret = msgBox.exec();
-            if (ret == QMessageBox::Yes) {
-                Gui::Control().reject();
-            } else {
-                return false;
+        TaskDlgFeatureParameters *featureDlg = nullptr;
+        if (dlg) {
+            featureDlg = qobject_cast<TaskDlgFeatureParameters *>(dlg);
+            // NOTE: if the dialog is not partDesigan dialog the featureDlg will be NULL
+            if (featureDlg && featureDlg->viewProvider() != this) {
+                featureDlg = 0; // another feature left open its task panel
+            }
+            if (dlg && !featureDlg) {
+                QMessageBox msgBox;
+                msgBox.setText(QObject::tr("A dialog is already open in the task panel"));
+                msgBox.setInformativeText(QObject::tr("Do you want to close this dialog?"));
+                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                msgBox.setDefaultButton(QMessageBox::Yes);
+                int ret = msgBox.exec();
+                if (ret == QMessageBox::Yes) {
+                    Gui::Control().reject();
+                } else {
+                    return false;
+                }
             }
         }
 

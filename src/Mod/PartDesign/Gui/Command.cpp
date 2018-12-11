@@ -639,25 +639,25 @@ void CmdPartDesignNewSketch::activated(int iMsg)
 
         } else if (validPlaneCount > 1) {
             // Show dialog and let user pick plane
-           Gui::TaskView::TaskDialog *dlg = Gui::Control().activeDialog();
-           PartDesignGui::TaskDlgFeaturePick *pickDlg = qobject_cast<PartDesignGui::TaskDlgFeaturePick *>(dlg);
-           if (dlg && !pickDlg) {
-                QMessageBox msgBox;
-                msgBox.setText(QObject::tr("A dialog is already open in the task panel"));
-                msgBox.setInformativeText(QObject::tr("Do you want to close this dialog?"));
-                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                msgBox.setDefaultButton(QMessageBox::Yes);
-                int ret = msgBox.exec();
-                if (ret == QMessageBox::Yes)
-                    Gui::Control().closeDialog();
-                else {
-                    quitter();
-                    return;
+            Gui::TaskView::TaskDialog *dlg = Gui::Control().activeDialog();
+            if (dlg) {
+                PartDesignGui::TaskDlgFeaturePick *pickDlg = qobject_cast<PartDesignGui::TaskDlgFeaturePick *>(dlg);
+                if (!pickDlg) {
+                    QMessageBox msgBox;
+                    msgBox.setText(QObject::tr("A dialog is already open in the task panel"));
+                    msgBox.setInformativeText(QObject::tr("Do you want to close this dialog?"));
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    int ret = msgBox.exec();
+                    if (ret == QMessageBox::Yes)
+                        Gui::Control().closeDialog();
+                    else {
+                        quitter();
+                        return;
+                    }
                 }
-            }
-
-            if(dlg)
                 Gui::Control().closeDialog();
+            }
 
             Gui::Selection().clearSelection();
             Gui::Control().showDialog(new PartDesignGui::TaskDlgFeaturePick(planes, status, accepter, worker, quitter));
