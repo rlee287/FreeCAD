@@ -189,7 +189,7 @@ int main( int argc, char ** argv )
         QMessageBox::critical(0, appName, s);
         exit(1);
     }
-    catch (const Base::ProgramInformation& e) {
+    catch (const Base::ProgramInformation& e) { //check
         QApplication app(argc,argv);
         QString appName = QString::fromLatin1(App::Application::Config()["ExeName"].c_str());
         QString msg = QString::fromUtf8(e.what());
