@@ -984,40 +984,45 @@ Application * Application::_pcSingleton = 0;
 int Application::_argc;
 char ** Application::_argv;
 
-
 void Application::destruct(void)
 {
     // saving system parameter
     Console().Log("Saving system parameter...\n");
-    _pcSysParamMngr->SaveDocument();
+    if (_pcSysParamMngr) _pcSysParamMngr->SaveDocument();
     // saving the User parameter
     Console().Log("Saving system parameter...done\n");
     Console().Log("Saving user parameter...\n");
-    _pcUserParamMngr->SaveDocument();
+    if (_pcUserParamMngr) _pcUserParamMngr->SaveDocument();
     Console().Log("Saving user parameter...done\n");
 
     // now save all other parameter files
-    std::map<std::string,ParameterManager *>& paramMgr = _pcSingleton->mpcPramManager;
-    for (std::map<std::string,ParameterManager *>::iterator it = paramMgr.begin(); it != paramMgr.end(); ++it) {
-        if ((it->second != _pcSysParamMngr) && (it->second != _pcUserParamMngr)) {
-            if (it->second->HasSerializer()) {
-                Console().Log("Saving %s...\n", it->first.c_str());
-                it->second->SaveDocument();
-                Console().Log("Saving %s...done\n", it->first.c_str());
+    if (_pcSingleton) {
+        std::map<std::string,ParameterManager *>& paramMgr = _pcSingleton->mpcPramManager;
+        for (std::map<std::string,ParameterManager *>::iterator it = paramMgr.begin(); it != paramMgr.end(); ++it) {
+            if ((it->second != _pcSysParamMngr) && (it->second != _pcUserParamMngr)) {
+                if (it->second->HasSerializer()) {
+                    Console().Log("Saving %s...\n", it->first.c_str());
+                    it->second->SaveDocument();
+                    Console().Log("Saving %s...done\n", it->first.c_str());
+                }
             }
+
+            // clean up
+            delete it->second;
         }
 
-        // clean up
-        delete it->second;
+        paramMgr.clear();
     }
-
-    paramMgr.clear();
     _pcSysParamMngr = 0;
     _pcUserParamMngr = 0;
 
     // not initialized or doubel destruct!
-    assert(_pcSingleton);
-    delete _pcSingleton;
+    // Do not use assert for this kind of thing
+    if(_pcSingleton) {
+        delete _pcSingleton;
+    } else {
+        // Write an error thing
+    }
 
     // We must detach from console and delete the observer to save our file
     destructObserver();

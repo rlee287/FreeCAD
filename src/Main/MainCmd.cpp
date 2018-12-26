@@ -88,10 +88,12 @@ int main( int argc, char ** argv )
     }
     catch (const Base::UnknownProgramOption& e) {
         std::cerr << e.what();
+        App::Application::destruct();
         exit(1);
     }
     catch (const Base::ProgramInformation& e) {
         std::cout << e.what();
+        App::Application::destruct();
         exit(0);
     }
     catch (const Base::Exception& e) {
